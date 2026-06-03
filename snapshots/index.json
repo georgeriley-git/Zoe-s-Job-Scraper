@@ -1,0 +1,116 @@
+{
+  "snapshots": [
+    "2026-06-02_1554.json",
+    "2026-06-03_1252.json"
+  ],
+  "portals": [
+    {
+      "name": "SWTCH",
+      "url": "https://apply.workable.com/swtch-energy/?lng=en"
+    },
+    {
+      "name": "FLO EV Charging",
+      "url": "https://apply.workable.com/flo-addenergie/?lng=en"
+    },
+    {
+      "name": "ChargePoint",
+      "url": "https://www.chargepoint.com/en-ca/about/opportunities"
+    },
+    {
+      "name": "ChargeLab",
+      "url": "https://chargelab.co/jobs"
+    },
+    {
+      "name": "Northcharge",
+      "url": "https://www.linkedin.com/company/north-charge-inc/jobs/"
+    },
+    {
+      "name": "metroEV",
+      "url": "https://www.metroev.ca/careers"
+    },
+    {
+      "name": "Flipturn",
+      "url": "https://www.getflipturn.com/careers"
+    },
+    {
+      "name": "EVBox",
+      "url": "https://evbox.com/en/about/careers/"
+    },
+    {
+      "name": "Axso",
+      "url": "https://jobs.glowinthecloud.com/axso"
+    },
+    {
+      "name": "PowerON",
+      "url": "https://www.poweronenergy.ca/about/careers/"
+    },
+    {
+      "name": "Variablegrid Adaptive Power Inc",
+      "url": "https://www.linkedin.com/company/variablegrid-adaptive-power-inc/jobs/"
+    },
+    {
+      "name": "FIIX CMMS",
+      "url": "https://www.linkedin.com/jobs/search/?currentJobId=4401532817&f_C=2498%2C33920%2C20931%2C770755%2C10970690%2C8422791%2C2417593%2C10831502%2C10829528&geoId=92000000&origin=COMPANY_PAGE_JOBS_CLUSTER_EXPANSION&originToLandingJobPostings=4401532817%2C4415569881%2C4413751355%2C4409018866%2C4400582591%2C4413769175%2C4415566973%2C4398037629%2C4360757163"
+    },
+    {
+      "name": "MaintainX CMMS",
+      "url": "https://job-boards.greenhouse.io/maintainx"
+    },
+    {
+      "name": "UpKeep",
+      "url": "https://upkeep.com/careers/#careers-table"
+    },
+    {
+      "name": "GridBeyond",
+      "url": "https://gridbeyond.bamboohr.com/careers"
+    },
+    {
+      "name": "Voltus",
+      "url": "https://www.voltus.co/jobs"
+    },
+    {
+      "name": "OhmConnect",
+      "url": "https://apply.workable.com/renewhome/"
+    },
+    {
+      "name": "Uplight Grid Software",
+      "url": "https://jobs.jobvite.com/uplight/jobs"
+    },
+    {
+      "name": "Opus One Solutions",
+      "url": "https://apply.workable.com/opusonesolutions/"
+    },
+    {
+      "name": "CPower Energy",
+      "url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=b2431733-235a-437c-978d-011f4e00c432&ccId=19000101_000001&type=JS&lang=en_US"
+    },
+    {
+      "name": "GE Vernova",
+      "url": "https://careers.gevernova.com/jobs?filter%5Bcountry%5D%5B0%5D=Canada&filter%5Bemployment_type%5D%5B0%5D=Full%20Time&filter%5Bcategory%5D%5B0%5D=Sales&filter%5Bcategory%5D%5B1%5D=Services&page_number=2"
+    },
+    {
+      "name": "Virtual Peaker",
+      "url": "https://virtual-peaker.com/company/careers/"
+    },
+    {
+      "name": "Enel Group",
+      "url": "https://jobs.enel.com/en_US/careers/JobOpenings/?505=5999&505_format=670&listFilterMode=1&jobRecordsPerPage=100&"
+    },
+    {
+      "name": "EnPowered",
+      "url": "https://enpowered.com/career/your-ideal-job-not-listed/"
+    },
+    {
+      "name": "GeoTab",
+      "url": "https://careers.geotab.com/jobs?location=CA&department=All&role=All&page=1"
+    },
+    {
+      "name": "Edgecom",
+      "url": "https://edgecomcareers.applytojobs.ca/"
+    },
+    {
+      "name": "Novisto",
+      "url": "https://novisto.com/company/careers/job-openings"
+    }
+  ]
+}

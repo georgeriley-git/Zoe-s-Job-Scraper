@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zoe's Jobs Scraper</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: #eef2f7;
+      color: #1e293b;
+      line-height: 1.55;
+      min-height: 100vh;
+    }
+
+    .header {
+      background: #0f2044;
+      color: #fff;
+      padding: 16px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 2px 10px rgba(0,0,0,.4);
+    }
+    .header-title { font-size: 1.1rem; font-weight: 700; letter-spacing: .01em; }
+    .header-meta  { font-size: .78rem; color: #94a3b8; }
+
+    .main { max-width: 860px; margin: 0 auto; padding: 28px 16px 64px; }
+
+    .day { margin-bottom: 36px; }
+    .day-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #0f2044;
+    }
+    .day-name   { font-size: 1rem; font-weight: 700; color: #0f2044; }
+    .today-pill {
+      font-size: .68rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .06em; background: #059669; color: #fff;
+      padding: 2px 7px; border-radius: 4px;
+    }
+    .day-badge {
+      font-size: .72rem; font-weight: 700;
+      background: #2563eb; color: #fff;
+      padding: 2px 9px; border-radius: 20px;
+      margin-left: auto;
+    }
+
+    .company {
+      background: #fff;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08);
+      overflow: hidden;
+    }
+    .company-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 16px;
+      background: #f8fafc;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .company-name  { font-size: .875rem; font-weight: 600; color: #1e3a8a; }
+    .company-count {
+      font-size: .7rem; font-weight: 600;
+      color: #2563eb; background: #eff6ff;
+      padding: 2px 8px; border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    .job-list { list-style: none; padding: 4px 0; }
+    .job-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 7px 16px 7px 28px;
+      position: relative;
+      border-bottom: 1px solid #f8fafc;
+    }
+    .job-list li:last-child { border-bottom: none; }
+    .job-list li.job-new {
+      background: #f0fdf4;
+      border-left: 3px solid #22c55e;
+    }
+    .job-list li::before {
+      content: "›";
+      position: absolute;
+      left: 14px;
+      color: #2563eb;
+      font-weight: 700;
+      font-size: 1.05em;
+    }
+    .job-title {
+      font-size: .86rem;
+      color: #374151;
+      flex: 1;
+      min-width: 0;
+    }
+    a.job-title {
+      color: #1d4ed8;
+      text-decoration: none;
+    }
+    a.job-title:hover {
+      text-decoration: underline;
+      color: #1e40af;
+    }
+    .job-loc {
+      font-size: .76rem;
+      color: #64748b;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .scrape-warning {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-left: 4px solid #ea580c;
+      border-radius: 6px;
+      padding: 10px 16px;
+      margin-bottom: 24px;
+      font-size: .82rem;
+      color: #7c2d12;
+      line-height: 1.5;
+    }
+    .scrape-warning strong { color: #9f1239; }
+
+    .empty { text-align: center; padding: 72px 24px; color: #64748b; }
+    .empty h2 {
+      font-size: 1.05rem; font-weight: 600;
+      color: #334155; margin-bottom: 8px;
+    }
+    .empty p { font-size: .875rem; }
+
+    .footer { text-align: center; padding: 20px; font-size: .73rem; color: #94a3b8; }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .filter-select {
+      flex: 1;
+      min-width: 160px;
+      padding: 8px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: .875rem;
+      color: #1e293b;
+      background: #fff;
+      cursor: pointer;
+    }
+    .run-btn {
+      padding: 8px 18px;
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: .875rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .run-btn:hover:not(:disabled) { background: #1d4ed8; }
+    .run-btn:disabled { background: #94a3b8; cursor: not-allowed; }
+
+    .progress-panel {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 6px;
+      padding: 10px 16px;
+      margin-bottom: 16px;
+      font-size: .84rem;
+      color: #1e40af;
+      align-items: center;
+      gap: 10px;
+    }
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid #bfdbfe;
+      border-top-color: #2563eb;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    #pinned-section {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid #7c3aed;
+      border-radius: 8px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08);
+      overflow: hidden;
+    }
+    .pinned-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
+      background: #faf5ff;
+      border-bottom: 1px solid #ede9fe;
+    }
+    .pinned-title {
+      font-size: .84rem;
+      font-weight: 700;
+      color: #5b21b6;
+      flex: 1;
+    }
+    .pinned-badge {
+      font-size: .7rem;
+      font-weight: 700;
+      background: #7c3aed;
+      color: #fff;
+      padding: 2px 9px;
+      border-radius: 20px;
+    }
+    .pinned-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px 8px 14px;
+      border-bottom: 1px solid #f8fafc;
+    }
+    .pinned-item:last-child { border-bottom: none; }
+    .pinned-item.drag-over  { background: #f5f3ff; }
+    .pinned-item.dragging   { opacity: .35; }
+    .drag-handle {
+      color: #d1d5db;
+      cursor: grab;
+      font-size: .78rem;
+      letter-spacing: -1px;
+      user-select: none;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+    .drag-handle:active { cursor: grabbing; }
+    .pinned-info { flex: 1; min-width: 0; }
+    .pinned-job-title {
+      font-size: .86rem;
+      color: #1d4ed8;
+      text-decoration: none;
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .pinned-job-title:hover { text-decoration: underline; }
+    span.pinned-job-title   { color: #374151; }
+    .pinned-meta {
+      font-size: .72rem;
+      color: #64748b;
+      margin-top: 2px;
+    }
+    .unpin-btn {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 2px 7px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+    .unpin-btn:hover { color: #ef4444; background: #fef2f2; }
+
+    .job-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .pin-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0 2px;
+      font-size: .8rem;
+      line-height: 1;
+      opacity: .18;
+      transition: opacity .12s;
+      flex-shrink: 0;
+    }
+    .job-list li:hover .pin-btn { opacity: .55; }
+    .pin-btn:hover              { opacity: 1 !important; }
+    .pin-btn.is-pinned          { opacity: 1; }
+
+    @media (max-width: 600px) {
+      .header { flex-wrap: wrap; padding: 12px 14px; gap: 6px; }
+      .header-meta { font-size: .72rem; }
+      .main { padding: 14px 10px 60px; }
+      .day-header { flex-wrap: wrap; gap: 6px; }
+      .day-badge { margin-left: 0; }
+      .job-list li {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+        padding: 8px 14px 8px 26px;
+      }
+      .job-title { word-break: break-word; }
+      .job-loc { white-space: normal; }
+      .company-head { padding: 9px 12px; }
+      .company-name { font-size: .82rem; }
+      .controls { gap: 8px; }
+      .filter-select { min-width: 0; }
+      .pin-btn { opacity: .55; }
+      .drag-handle { display: none; }
+    }
+
+    .zero-results { margin-bottom: 16px; }
+    .zero-results > summary {
+      cursor: pointer;
+      list-style: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: .74rem;
+      color: #94a3b8;
+      user-select: none;
+      padding: 2px 0;
+    }
+    .zero-results > summary::-webkit-details-marker { display: none; }
+    .zero-results > summary::marker { content: none; }
+    .zero-results > summary:focus-visible { outline: 1px dotted #cbd5e1; border-radius: 2px; }
+    .zr-arrow {
+      font-size: .6rem;
+      display: inline-block;
+      transition: transform .15s;
+      color: #cbd5e1;
+    }
+    .zero-results[open] > summary .zr-arrow { transform: rotate(90deg); }
+    .zr-body {
+      margin-top: 6px;
+      padding: 8px 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+    }
+    .zr-list { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 3px 18px; }
+    .zr-list li { font-size: .77rem; }
+    .zr-list a { color: #94a3b8; text-decoration: none; }
+    .zr-list a:hover { color: #64748b; text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <span class="header-title">Zoe's Jobs Scraper</span>
+    <span class="header-meta">Last scraped: 3 June 2026 at 08:52 EDT</span>
+  </header>
+  <main class="main">
+    <section id="pinned-section" style="display:none">
+      <div class="pinned-header">
+        <span class="pinned-title">📌 Pinned</span>
+        <span id="pinned-count" class="pinned-badge">0</span>
+      </div>
+      <div id="pinned-list"></div>
+    </section>
+    <details class="zero-results">
+      <summary><span class="zr-arrow">&#9658;</span> Sites returning 0 jobs (16)</summary>
+      <div class="zr-body"><ul class="zr-list">
+          <li><a href="https://jobs.glowinthecloud.com/axso" target="_blank" rel="noopener">Axso</a></li>
+          <li><a href="https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=b2431733-235a-437c-978d-011f4e00c432&amp;ccId=19000101_000001&amp;type=JS&amp;lang=en_US" target="_blank" rel="noopener">CPower Energy</a></li>
+          <li><a href="https://evbox.com/en/about/careers/" target="_blank" rel="noopener">EVBox</a></li>
+          <li><a href="https://enpowered.com/career/your-ideal-job-not-listed/" target="_blank" rel="noopener">EnPowered</a></li>
+          <li><a href="https://www.getflipturn.com/careers" target="_blank" rel="noopener">Flipturn</a></li>
+          <li><a href="https://careers.gevernova.com/jobs?filter%5Bcountry%5D%5B0%5D=Canada&amp;filter%5Bemployment_type%5D%5B0%5D=Full%20Time&amp;filter%5Bcategory%5D%5B0%5D=Sales&amp;filter%5Bcategory%5D%5B1%5D=Services&amp;page_number=2" target="_blank" rel="noopener">GE Vernova</a></li>
+          <li><a href="https://gridbeyond.bamboohr.com/careers" target="_blank" rel="noopener">GridBeyond</a></li>
+          <li><a href="https://www.linkedin.com/company/north-charge-inc/jobs/" target="_blank" rel="noopener">Northcharge</a></li>
+          <li><a href="https://novisto.com/company/careers/job-openings" target="_blank" rel="noopener">Novisto</a></li>
+          <li><a href="https://apply.workable.com/opusonesolutions/" target="_blank" rel="noopener">Opus One Solutions</a></li>
+          <li><a href="https://www.poweronenergy.ca/about/careers/" target="_blank" rel="noopener">PowerON</a></li>
+          <li><a href="https://upkeep.com/careers/#careers-table" target="_blank" rel="noopener">UpKeep</a></li>
+          <li><a href="https://jobs.jobvite.com/uplight/jobs" target="_blank" rel="noopener">Uplight Grid Software</a></li>
+          <li><a href="https://www.linkedin.com/company/variablegrid-adaptive-power-inc/jobs/" target="_blank" rel="noopener">Variablegrid Adaptive Power Inc</a></li>
+          <li><a href="https://virtual-peaker.com/company/careers/" target="_blank" rel="noopener">Virtual Peaker</a></li>
+          <li><a href="https://www.metroev.ca/careers" target="_blank" rel="noopener">metroEV</a></li>
+      </ul></div>
+    </details>
+    <div class="controls">
+      <select id="company-filter" class="filter-select"><option value="">All companies</option></select>
+      <button id="run-btn" class="run-btn">&#9654; Run Scraper</button>
+    </div>
+    <div id="progress-panel" class="progress-panel" style="display:none">
+      <div id="spinner" class="spinner"></div>
+      <span id="progress-text"></span>
+    </div>
+    <section class="day">
+      <div class="day-header">
+        <h2 class="day-name">3 June 2026</h2>
+        <span class="today-pill">today</span>
+        <span class="day-badge">62 new</span>
+      </div>
+      <div class="companies">
+        <div class="company">
+          <div class="company-head"><span class="company-name">ChargePoint</span><span class="company-count">1 job</span></div>
+          <ul class="job-list">
+          <li class="job-new" data-pin-id="chargepoint|embedded linux engineer - platform software" data-title="Embedded Linux Engineer - Platform Software" data-url="https://www.chargepoint.com/about/opportunities/embedded-linux-engineer-platform-software?gh_jid=8524453002" data-company="ChargePoint" data-date="2026-06-03"><a href="https://www.chargepoint.com/about/opportunities/embedded-linux-engineer-platform-software?gh_jid=8524453002" target="_blank" rel="noopener" class="job-title">Embedded Linux Engineer - Platform Software</a><span class="job-right"><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          </ul>
+        </div>
+        <div class="company">
+          <div class="company-head"><span class="company-name">Edgecom</span><span class="company-count">4 jobs</span></div>
+          <ul class="job-list">
+          <li class="job-new" data-pin-id="edgecom|directeur(trice) du développement des affaires (québec)" data-title="Directeur(trice) du développement des affaires (Québec)" data-url="https://edgecomcareers.applytojobs.ca/d%c3%a9veloppement+des+affaires/44343" data-company="Edgecom" data-date="2026-06-03"><a href="https://edgecomcareers.applytojobs.ca/d%c3%a9veloppement+des+affaires/44343" target="_blank" rel="noopener" class="job-title">Directeur(trice) du développement des affaires (Québec)</a><span class="job-right"><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="edgecom|manager of business development – quebec" data-title="Manager of Business Development – Quebec" data-url="https://edgecomcareers.applytojobs.ca/sales/44235" data-company="Edgecom" data-date="2026-06-03"><a href="https://edgecomcareers.applytojobs.ca/sales/44235" target="_blank" rel="noopener" class="job-title">Manager of Business Development – Quebec</a><span class="job-right"><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="edgecom|scada/iot integration engineer" data-title="SCADA/IOT Integration Engineer" data-url="https://edgecomcareers.applytojobs.ca/product/43181" data-company="Edgecom" data-date="2026-06-03"><a href="https://edgecomcareers.applytojobs.ca/product/43181" target="_blank" rel="noopener" class="job-title">SCADA/IOT Integration Engineer</a><span class="job-right"><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="edgecom|senior software engineer" data-title="Senior Software Engineer" data-url="https://edgecomcareers.applytojobs.ca/product/43180" data-company="Edgecom" data-date="2026-06-03"><a href="https://edgecomcareers.applytojobs.ca/product/43180" target="_blank" rel="noopener" class="job-title">Senior Software Engineer</a><span class="job-right"><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          </ul>
+        </div>
+        <div class="company">
+          <div class="company-head"><span class="company-name">Enel Group</span><span class="company-count">1 job</span></div>
+          <ul class="job-list">
+          <li class="job-new" data-pin-id="enel group|assistant wind site supervisor - pincher creek, alberta, canada" data-title="Assistant Wind Site Supervisor - Pincher Creek, Alberta, Canada" data-url="https://jobs.enel.com/en_US/careers/JobDetail/22297?team=RenewableEnergies" data-company="Enel Group" data-date="2026-06-03"><a href="https://jobs.enel.com/en_US/careers/JobDetail/22297?team=RenewableEnergies" target="_blank" rel="noopener" class="job-title">Assistant Wind Site Supervisor - Pincher Creek, Alberta, Canada</a><span class="job-right"><span class="job-loc">Alberta, Canada</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          </ul>
+        </div>
+        <div class="company">
+          <div class="company-head"><span class="company-name">GeoTab</span><span class="company-count">9 jobs</span></div>
+          <ul class="job-list">
+          <li class="job-new" data-pin-id="geotab|associate vice president, sales enablement (remote) sales remote - canada" data-title="Associate Vice President, Sales Enablement (Remote) Sales Remote - Canada" data-url="https://careers.geotab.com/jobs/description/5206153008/" data-company="GeoTab" data-date="2026-06-03"><a href="https://careers.geotab.com/jobs/description/5206153008/" target="_blank" rel="noopener" class="job-title">Associate Vice President, Sales Enablement (Remote) Sales Remote - Canada</a><span class="job-right"><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="geotab|business development representative sales oakville, ontario - canada; toronto, ontario" data-title="Business Development Representative Sales Oakville, Ontario - Canada; Toronto, Ontario" data-url="https://careers.geotab.com/jobs/description/5187545008/" data-company="GeoTab" data-date="2026-06-03"><a href="https://careers.geotab.com/jobs/description/5187545008/" target="_blank" rel="noopener" class="job-title">Business Development Representative Sales Oakville, Ontario - Canada; Toronto, Ontario</a><span class="job-right"><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="geotab|business development specialist sales oakville, ontario - canada; toronto, ontario - canada; waterloo, ontario" data-title="Business Development Specialist Sales Oakville, Ontario - Canada; Toronto, Ontario - Canada; Waterloo, Ontario" data-url="https://careers.geotab.com/jobs/description/5232358008/" data-company="GeoTab" data-date="2026-06-03"><a href="https://careers.geotab.com/jobs/description/5232358008/" target="_blank" rel="noopener" class="job-title">Business Development Specialist Sales Oakville, Ontario - Canada; Toronto, Ontario - Canada; Waterloo, Ontario</a><span class="job-right"><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="geotab|corporate development analyst operations oakville, ontario - canada; toronto, ontario" data-title="Corporate Development Analyst Operations Oakville, Ontario - Canada; Toronto, Ontario" data-url="https://careers.geotab.com/jobs/description/5192173008/" data-company="GeoTab" data-date="2026-06-03"><a href="https://careers.geotab.com/jobs/description/5192173008/" target="_blank" rel="noopener" class="job-title">Corporate Development Analyst Operations Oakville, Ontario - Canada; Toronto, Ontario</a><span class="job-right"><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="geotab|credit risk &amp; recovery manager finance oakville, ontario" data-title="Credit Risk &amp; Recovery Manager Finance Oakville, Ontario" data-url="https://careers.geotab.com/jobs/description/5228330008/" data-company="GeoTab" data-date="2026-06-03"><a href="https://careers.geotab.com/jobs/description/5228330008/" target="_blank" rel="noopener" class="job-title">Credit Risk &amp; Recovery Manager Finance Oakville, Ontario</a><span class="job-right"><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="geotab|global demo excellence lead sales remote - canada" data-title="Global Demo Excellence Lead Sales Remote - Canada" data-url="https://careers.geotab.com/jobs/description/5206140008/" data-company="GeoTab" data-date="2026-06-03"><a href="https://careers.geotab.com/jobs/description/5206140008/" target="_blank" rel="noopener" class="job-title">Global Demo Excellence Lead Sales Remote - Canada</a><span class="job-right"><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="geotab|legal counsel legal &amp; compliance oakville, ontario - canada; toronto, ontario - canada; waterloo, ontario" data-title="Legal Counsel Legal &amp; Compliance Oakville, Ontario - Canada; Toronto, Ontario - Canada; Waterloo, Ontario" data-url="https://careers.geotab.com/jobs/description/5207826008/" data-company="GeoTab" data-date="2026-06-03"><a href="https://careers.geotab.com/jobs/description/5207826008/" target="_blank" rel="noopener" class="job-title">Legal Counsel Legal &amp; Compliance Oakville, Ontario - Canada; Toronto, Ontario - Canada; Waterloo, Ontario</a><span class="job-right"><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="geotab|network engineering technical operations oakville, ontario - canada; toronto, ontario - canada; waterloo, ontario" data-title="Network Engineering Technical Operations Oakville, Ontario - Canada; Toronto, Ontario - Canada; Waterloo, Ontario" data-url="https://careers.geotab.com/jobs/description/5212772008/" data-company="GeoTab" data-date="2026-06-03"><a href="https://careers.geotab.com/jobs/description/5212772008/" target="_blank" rel="noopener" class="job-title">Network Engineering Technical Operations Oakville, Ontario - Canada; Toronto, Ontario - Canada; Waterloo, Ontario</a><span class="job-right"><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="geotab|sales enablement lead (remote) sales oakville, ontario" data-title="Sales Enablement Lead (Remote) Sales Oakville, Ontario" data-url="https://careers.geotab.com/jobs/description/5206161008/" data-company="GeoTab" data-date="2026-06-03"><a href="https://careers.geotab.com/jobs/description/5206161008/" target="_blank" rel="noopener" class="job-title">Sales Enablement Lead (Remote) Sales Oakville, Ontario</a><span class="job-right"><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          </ul>
+        </div>
+        <div class="company">
+          <div class="company-head"><span class="company-name">MaintainX CMMS</span><span class="company-count">35 jobs</span></div>
+          <ul class="job-list">
+          <li class="job-new" data-pin-id="maintainx cmms|concepteur de produits senior" data-title="Concepteur de produits senior" data-url="https://job-boards.greenhouse.io/maintainx/jobs/4360980007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/4360980007" target="_blank" rel="noopener" class="job-title">Concepteur de produits senior</a><span class="job-right"><span class="job-loc">Montreal, Canada</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|customer education manager" data-title="Customer Education Manager" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5137643007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5137643007" target="_blank" rel="noopener" class="job-title">Customer Education Manager</a><span class="job-right"><span class="job-loc">Toronto, Ontario</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|customer success manager" data-title="Customer Success Manager" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5040463007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5040463007" target="_blank" rel="noopener" class="job-title">Customer Success Manager</a><span class="job-right"><span class="job-loc">Montreal</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|customer success manager (bilingual – english &amp; spanish)" data-title="Customer Success Manager (Bilingual – English &amp; Spanish)" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5135472007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5135472007" target="_blank" rel="noopener" class="job-title">Customer Success Manager (Bilingual – English &amp; Spanish)</a><span class="job-right"><span class="job-loc">Toronto</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|design researcher" data-title="Design Researcher" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5123809007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5123809007" target="_blank" rel="noopener" class="job-title">Design Researcher</a><span class="job-right"><span class="job-loc">Toronto, Ontario, Canada</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|devops specialist" data-title="DevOps Specialist" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5064497007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5064497007" target="_blank" rel="noopener" class="job-title">DevOps Specialist</a><span class="job-right"><span class="job-loc">Montreal, Toronto</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|directeur·trice du développement logiciel, plateforme" data-title="Directeur·trice du développement logiciel, plateforme" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5147149007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5147149007" target="_blank" rel="noopener" class="job-title">Directeur·trice du développement logiciel, plateforme</a><span class="job-right"><span class="job-loc">Montréal</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|director of software development, platform" data-title="Director of Software Development, Platform" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5147135007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5147135007" target="_blank" rel="noopener" class="job-title">Director of Software Development, Platform</a><span class="job-right"><span class="job-loc">Toronto, Montreal</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|développeur de données senior" data-title="Développeur de données senior" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5019738007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5019738007" target="_blank" rel="noopener" class="job-title">Développeur de données senior</a><span class="job-right"><span class="job-loc">Montreal, Toronto</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|développeur logiciel senior, facturation" data-title="Développeur logiciel senior, facturation" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5128466007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5128466007" target="_blank" rel="noopener" class="job-title">Développeur logiciel senior, facturation</a><span class="job-right"><span class="job-loc">Montréal</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|développeur(euse) de données sénior, gouvernance des données" data-title="Développeur(euse) de données sénior, gouvernance des données" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5105184007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5105184007" target="_blank" rel="noopener" class="job-title">Développeur(euse) de données sénior, gouvernance des données</a><span class="job-right"><span class="job-loc">Montréal, Toronto</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|développeur(se) de logiciel senior spécialisé en moteurs de recherche" data-title="Développeur(se) de logiciel senior spécialisé en moteurs de recherche" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5073911007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5073911007" target="_blank" rel="noopener" class="job-title">Développeur(se) de logiciel senior spécialisé en moteurs de recherche</a><span class="job-right"><span class="job-loc">Montréal, Toronto</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|développeur(se) en fiabilité de site" data-title="Développeur(se) en fiabilité de site" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5051539007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5051539007" target="_blank" rel="noopener" class="job-title">Développeur(se) en fiabilité de site</a><span class="job-right"><span class="job-loc">Montreal &amp; Toronto</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|développeur(se) full-stack intermédiaire" data-title="Développeur(se) Full-Stack intermédiaire" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5071283007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5071283007" target="_blank" rel="noopener" class="job-title">Développeur(se) Full-Stack intermédiaire</a><span class="job-right"><span class="job-loc">Montréal</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|développeur(se) full-stack sénior ou en chef" data-title="Développeur(se) Full-Stack sénior ou en chef" data-url="https://job-boards.greenhouse.io/maintainx/jobs/4946464007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/4946464007" target="_blank" rel="noopener" class="job-title">Développeur(se) Full-Stack sénior ou en chef</a><span class="job-right"><span class="job-loc">Montréal</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|développeur(se) logiciel de plateforme" data-title="Développeur(se) Logiciel de Plateforme" data-url="https://job-boards.greenhouse.io/maintainx/jobs/4999426007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/4999426007" target="_blank" rel="noopener" class="job-title">Développeur(se) Logiciel de Plateforme</a><span class="job-right"><span class="job-loc">Montreal, Quebec</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|développeur(se) logiciel de plateforme, outils de développement ia" data-title="Développeur(se) Logiciel de Plateforme, Outils de développement IA" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5067627007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5067627007" target="_blank" rel="noopener" class="job-title">Développeur(se) Logiciel de Plateforme, Outils de développement IA</a><span class="job-right"><span class="job-loc">Montreal, Canada</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|développeur(se) logiciel principal (senior), déploiements de conformité et multi-régions" data-title="Développeur(se) logiciel principal (Senior), déploiements de conformité et multi-régions" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5053057007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5053057007" target="_blank" rel="noopener" class="job-title">Développeur(se) logiciel principal (Senior), déploiements de conformité et multi-régions</a><span class="job-right"><span class="job-loc">Montréal, Toronto</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|développeur(se) logiciel senior, plateforme api et écosystème" data-title="Développeur(se) logiciel senior, Plateforme API et Écosystème" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5074069007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5074069007" target="_blank" rel="noopener" class="job-title">Développeur(se) logiciel senior, Plateforme API et Écosystème</a><span class="job-right"><span class="job-loc">Montréal, Toronto</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|full-stack developer - iam" data-title="Full-Stack Developer - IAM" data-url="https://job-boards.greenhouse.io/maintainx/jobs/4978970007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/4978970007" target="_blank" rel="noopener" class="job-title">Full-Stack Developer - IAM</a><span class="job-right"><span class="job-loc">Toronto</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|full-stack developer, connected data" data-title="Full-Stack Developer, Connected Data" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5112773007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5112773007" target="_blank" rel="noopener" class="job-title">Full-Stack Developer, Connected Data</a><span class="job-right"><span class="job-loc">Montréal, Toronto</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|gestionnaire de la réussite client" data-title="Gestionnaire de la réussite client" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5135509007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5135509007" target="_blank" rel="noopener" class="job-title">Gestionnaire de la réussite client</a><span class="job-right"><span class="job-loc">Montreal, Canada</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|gestionnaire de la réussite client (bilingue – anglais et espagnol)" data-title="Gestionnaire de la Réussite Client (Bilingue – Anglais et Espagnol)" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5135467007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5135467007" target="_blank" rel="noopener" class="job-title">Gestionnaire de la Réussite Client (Bilingue – Anglais et Espagnol)</a><span class="job-right"><span class="job-loc">Montreal</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|gestionnaire de la réussite des clients" data-title="Gestionnaire de la réussite des clients" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5040462007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5040462007" target="_blank" rel="noopener" class="job-title">Gestionnaire de la réussite des clients</a><span class="job-right"><span class="job-loc">Montreal</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|gestionnaire du design produitnew" data-title="Gestionnaire du design produitNew" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5147154007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5147154007" target="_blank" rel="noopener" class="job-title">Gestionnaire du design produitNew</a><span class="job-right"><span class="job-loc">Montréal</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|gestionnaire du développement logiciel" data-title="Gestionnaire du développement logiciel" data-url="https://job-boards.greenhouse.io/maintainx/jobs/4744323007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/4744323007" target="_blank" rel="noopener" class="job-title">Gestionnaire du développement logiciel</a><span class="job-right"><span class="job-loc">Montreal, Toronto</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|gestionnaire du développement logiciel, devops" data-title="Gestionnaire du développement logiciel, DevOps" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5144036007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5144036007" target="_blank" rel="noopener" class="job-title">Gestionnaire du développement logiciel, DevOps</a><span class="job-right"><span class="job-loc">Montréal</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|head of growth and data science" data-title="Head of Growth and Data Science" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5041650007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5041650007" target="_blank" rel="noopener" class="job-title">Head of Growth and Data Science</a><span class="job-right"><span class="job-loc">Canada (Remote)</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|intermediate full-stack developer" data-title="Intermediate Full-Stack Developer" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5071289007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5071289007" target="_blank" rel="noopener" class="job-title">Intermediate Full-Stack Developer</a><span class="job-right"><span class="job-loc">Montreal, Toronto</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|platform developer, ai builder" data-title="Platform Developer, AI Builder" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5067628007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5067628007" target="_blank" rel="noopener" class="job-title">Platform Developer, AI Builder</a><span class="job-right"><span class="job-loc">Canada/United States</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|principal technical program manager" data-title="Principal Technical Program Manager" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5130372007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5130372007" target="_blank" rel="noopener" class="job-title">Principal Technical Program Manager</a><span class="job-right"><span class="job-loc">United States &amp; Canada (Remote)</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|product design managernew" data-title="Product Design ManagerNew" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5146385007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5146385007" target="_blank" rel="noopener" class="job-title">Product Design ManagerNew</a><span class="job-right"><span class="job-loc">Montreal, Canada</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|responsable de la formation des clients" data-title="Responsable de la formation des clients" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5137672007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5137672007" target="_blank" rel="noopener" class="job-title">Responsable de la formation des clients</a><span class="job-right"><span class="job-loc">Montreal, Quebec</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|scaled enterprise customer success manager" data-title="Scaled Enterprise Customer Success Manager" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5135511007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5135511007" target="_blank" rel="noopener" class="job-title">Scaled Enterprise Customer Success Manager</a><span class="job-right"><span class="job-loc">Toronto</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="maintainx cmms|senior product designer" data-title="Senior Product Designer" data-url="https://job-boards.greenhouse.io/maintainx/jobs/5133299007" data-company="MaintainX CMMS" data-date="2026-06-03"><a href="https://job-boards.greenhouse.io/maintainx/jobs/5133299007" target="_blank" rel="noopener" class="job-title">Senior Product Designer</a><span class="job-right"><span class="job-loc">Toronto, Ontario, Canada</span><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          </ul>
+        </div>
+        <div class="company">
+          <div class="company-head"><span class="company-name">Voltus</span><span class="company-count">12 jobs</span></div>
+          <ul class="job-list">
+          <li class="job-new" data-pin-id="voltus|energy markets intern (miso)" data-title="Energy Markets Intern (MISO)" data-url="https://jobs.lever.co/voltus/b7833dd8-d742-44d8-aae2-2e7de7541ce4/apply" data-company="Voltus" data-date="2026-06-03"><a href="https://jobs.lever.co/voltus/b7833dd8-d742-44d8-aae2-2e7de7541ce4/apply" target="_blank" rel="noopener" class="job-title">Energy Markets Intern (MISO)</a><span class="job-right"><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="voltus|market operations analyst" data-title="Market Operations Analyst" data-url="https://jobs.lever.co/voltus/a3b26f0a-a9a5-4b66-b48a-bd4f73879d15/apply" data-company="Voltus" data-date="2026-06-03"><a href="https://jobs.lever.co/voltus/a3b26f0a-a9a5-4b66-b48a-bd4f73879d15/apply" target="_blank" rel="noopener" class="job-title">Market Operations Analyst</a><span class="job-right"><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="voltus|product manager - market platform" data-title="Product Manager - Market Platform" data-url="https://jobs.lever.co/voltus/d2dac708-c864-4f43-89cf-6220c1387e38/apply" data-company="Voltus" data-date="2026-06-03"><a href="https://jobs.lever.co/voltus/d2dac708-c864-4f43-89cf-6220c1387e38/apply" target="_blank" rel="noopener" class="job-title">Product Manager - Market Platform</a><span class="job-right"><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="voltus|residential data analyst intern" data-title="Residential Data Analyst Intern" data-url="https://jobs.lever.co/voltus/d30b5349-1023-497f-a5e5-264204071235/apply" data-company="Voltus" data-date="2026-06-03"><a href="https://jobs.lever.co/voltus/d30b5349-1023-497f-a5e5-264204071235/apply" target="_blank" rel="noopener" class="job-title">Residential Data Analyst Intern</a><span class="job-right"><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="voltus|sales associate (remote)" data-title="Sales Associate (Remote)" data-url="https://jobs.lever.co/voltus/e6e12da1-116e-4fa9-bb36-a6d224aaee4f/apply" data-company="Voltus" data-date="2026-06-03"><a href="https://jobs.lever.co/voltus/e6e12da1-116e-4fa9-bb36-a6d224aaee4f/apply" target="_blank" rel="noopener" class="job-title">Sales Associate (Remote)</a><span class="job-right"><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="voltus|sales director - miso" data-title="Sales Director - MISO" data-url="https://jobs.lever.co/voltus/76f6fac9-e688-40dd-bdf0-2b67494ea292/apply" data-company="Voltus" data-date="2026-06-03"><a href="https://jobs.lever.co/voltus/76f6fac9-e688-40dd-bdf0-2b67494ea292/apply" target="_blank" rel="noopener" class="job-title">Sales Director - MISO</a><span class="job-right"><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="voltus|sales director pjm" data-title="Sales Director PJM" data-url="https://jobs.lever.co/voltus/34b834c0-7227-4c64-bfae-a31b50ab30d4/apply" data-company="Voltus" data-date="2026-06-03"><a href="https://jobs.lever.co/voltus/34b834c0-7227-4c64-bfae-a31b50ab30d4/apply" target="_blank" rel="noopener" class="job-title">Sales Director PJM</a><span class="job-right"><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="voltus|sales director spp+" data-title="Sales Director SPP+" data-url="https://jobs.lever.co/voltus/416935ba-7e48-4e27-8f4d-271627808c01/apply" data-company="Voltus" data-date="2026-06-03"><a href="https://jobs.lever.co/voltus/416935ba-7e48-4e27-8f4d-271627808c01/apply" target="_blank" rel="noopener" class="job-title">Sales Director SPP+</a><span class="job-right"><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="voltus|sales productivity specialist" data-title="Sales Productivity Specialist" data-url="https://jobs.lever.co/voltus/6fadc163-3d68-49af-8dd3-56389de0ee03/apply" data-company="Voltus" data-date="2026-06-03"><a href="https://jobs.lever.co/voltus/6fadc163-3d68-49af-8dd3-56389de0ee03/apply" target="_blank" rel="noopener" class="job-title">Sales Productivity Specialist</a><span class="job-right"><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="voltus|sales technical analytics intern" data-title="Sales Technical Analytics Intern" data-url="https://jobs.lever.co/voltus/abc773f3-edbc-4027-81fb-7668ef803e8d/apply" data-company="Voltus" data-date="2026-06-03"><a href="https://jobs.lever.co/voltus/abc773f3-edbc-4027-81fb-7668ef803e8d/apply" target="_blank" rel="noopener" class="job-title">Sales Technical Analytics Intern</a><span class="job-right"><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="voltus|security engineer" data-title="Security Engineer" data-url="https://jobs.lever.co/voltus/c58840c7-b1ef-4118-a871-480ecc7e1fc8/apply" data-company="Voltus" data-date="2026-06-03"><a href="https://jobs.lever.co/voltus/c58840c7-b1ef-4118-a871-480ecc7e1fc8/apply" target="_blank" rel="noopener" class="job-title">Security Engineer</a><span class="job-right"><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          <li class="job-new" data-pin-id="voltus|senior data infrastructure engineer" data-title="Senior Data Infrastructure Engineer" data-url="https://jobs.lever.co/voltus/9f71fcd9-f5d3-4bb1-bee5-750b5e372fde/apply" data-company="Voltus" data-date="2026-06-03"><a href="https://jobs.lever.co/voltus/9f71fcd9-f5d3-4bb1-bee5-750b5e372fde/apply" target="_blank" rel="noopener" class="job-title">Senior Data Infrastructure Engineer</a><span class="job-right"><button class="pin-btn" aria-pressed="false" aria-label="Pin this job">📌</button></span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="footer">27 companies tracked &nbsp;·&nbsp; 2 snapshots</footer>
+  <script>
+(function () {
+  function githubCtx() {
+    var m = location.hostname.match(/^([^.]+)\.github\.io$/);
+    if (!m) return null;
+    var parts = location.pathname.replace(/^\//, '').split('/');
+    return parts[0] ? { owner: m[1], repo: parts[0] } : null;
+  }
+
+  var ctx = githubCtx();
+  var runBtn = document.getElementById('run-btn');
+  var progressPanel = document.getElementById('progress-panel');
+  var progressText  = document.getElementById('progress-text');
+  var spinner       = document.getElementById('spinner');
+  var PORTAL_COUNT  = 27;
+
+  var filterSelect = document.getElementById('company-filter');
+
+  (function buildFilter() {
+    var seen = {}, names = [];
+    document.querySelectorAll('.company-name').forEach(function (el) {
+      var n = el.textContent;
+      if (!seen[n]) { seen[n] = true; names.push(n); }
+    });
+    names.sort().forEach(function (n) {
+      var opt = document.createElement('option');
+      opt.value = n; opt.textContent = n;
+      filterSelect.appendChild(opt);
+    });
+  })();
+
+  filterSelect.addEventListener('change', function () {
+    var val = filterSelect.value;
+    document.querySelectorAll('.company').forEach(function (card) {
+      var name = card.querySelector('.company-name').textContent;
+      card.style.display = (!val || name === val) ? '' : 'none';
+    });
+    document.querySelectorAll('.day').forEach(function (day) {
+      var anyVisible = [].slice.call(day.querySelectorAll('.company'))
+        .some(function (c) { return c.style.display !== 'none'; });
+      day.style.display = anyVisible ? '' : 'none';
+    });
+  });
+
+  if (!ctx) {
+    runBtn.disabled = true;
+    runBtn.title = 'Only works when viewed on GitHub Pages';
+    runBtn.style.opacity = '0.45';
+  }
+
+  runBtn.addEventListener('click', function () {
+    triggerScrape().catch(function (e) {
+      setStatus('Error: ' + e.message, false);
+      runBtn.disabled = !ctx;
+    });
+  });
+
+  function getPAT() {
+    var pat = localStorage.getItem('nj_gh_pat');
+    if (!pat) {
+      pat = prompt(
+        'Enter a GitHub Personal Access Token with "workflow" scope.\n' +
+        'Required to trigger the scrape workflow.\n' +
+        'Saved in this browser only.'
+      );
+      if (pat && pat.trim()) localStorage.setItem('nj_gh_pat', pat.trim());
+    }
+    return pat ? pat.trim() : null;
+  }
+
+  function setStatus(msg, showSpinner) {
+    progressText.textContent = msg;
+    spinner.style.display = showSpinner ? '' : 'none';
+  }
+
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+  async function triggerScrape() {
+    var pat = getPAT();
+    if (!pat) return;
+
+    runBtn.disabled = true;
+    progressPanel.style.display = 'flex';
+    setStatus('Triggering workflow…', true);
+
+    var startTime = Date.now();
+    var apiBase = 'https://api.github.com/repos/' + ctx.owner + '/' + ctx.repo;
+    var headers  = {
+      'Authorization': 'Bearer ' + pat,
+      'Accept': 'application/vnd.github+json',
+      'Content-Type': 'application/json'
+    };
+
+    var resp = await fetch(apiBase + '/actions/workflows/scrape.yml/dispatches', {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({ ref: 'main' })
+    });
+
+    if (resp.status === 401 || resp.status === 403) {
+      localStorage.removeItem('nj_gh_pat');
+      setStatus('PAT invalid or expired — try again.', false);
+      runBtn.disabled = false;
+      return;
+    }
+    if (!resp.ok) {
+      setStatus('Could not trigger workflow (HTTP ' + resp.status + '). Check PAT scope.', false);
+      runBtn.disabled = false;
+      return;
+    }
+
+    var run = null, attempts = 0;
+    setStatus('Workflow queued, waiting for it to start…', true);
+    while (!run && attempts < 20) {
+      await sleep(4000);
+      attempts++;
+      try {
+        var r = await fetch(
+          apiBase + '/actions/runs?event=workflow_dispatch&per_page=5',
+          { headers: headers }
+        );
+        var data = await r.json();
+        var runs = data.workflow_runs || [];
+        for (var i = 0; i < runs.length; i++) {
+          if (new Date(runs[i].created_at).getTime() >= startTime - 20000) {
+            run = runs[i]; break;
+          }
+        }
+      } catch (_) {}
+    }
+
+    if (!run) {
+      setStatus('Could not locate the workflow run. Check the Actions tab on GitHub.', false);
+      runBtn.disabled = false;
+      return;
+    }
+
+    while (true) {
+      var elapsed   = Math.round((Date.now() - startTime) / 1000);
+      var estimated = Math.min(Math.floor(elapsed / 30), PORTAL_COUNT);
+
+      if (run.status === 'completed') {
+        if (run.conclusion === 'success') {
+          setStatus('Done! Refreshing…', false);
+          await sleep(1500);
+          location.reload();
+        } else {
+          setStatus('Workflow ended: ' + run.conclusion + '. Check the Actions tab for details.', false);
+          runBtn.disabled = false;
+        }
+        return;
+      }
+
+      setStatus(estimated + '/' + PORTAL_COUNT + ' employers checked (est.) — ' + elapsed + 's elapsed', true);
+      await sleep(15000);
+
+      try {
+        var upd = await fetch(run.url, { headers: headers });
+        run = await upd.json();
+      } catch (_) {}
+    }
+  }
+})();
+
+  </script>
+  <script>
+(function () {
+  var LS_KEY = 'nj_pinned_v1';
+  var cache  = [];
+
+  function lsLoad() {
+    try { return JSON.parse(localStorage.getItem(LS_KEY) || '[]'); }
+    catch (_) { return []; }
+  }
+  function persist() { localStorage.setItem(LS_KEY, JSON.stringify(cache)); }
+
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function fmtDate(s) {
+    var p = s.split('-');
+    if (p.length < 3) return s;
+    var mon = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return +p[2] + ' ' + (mon[+p[1] - 1] || '') + ' ' + p[0];
+  }
+
+  function render() {
+    var section = document.getElementById('pinned-section');
+    var list    = document.getElementById('pinned-list');
+    var badge   = document.getElementById('pinned-count');
+    if (!section) return;
+    if (!cache.length) { section.style.display = 'none'; return; }
+    section.style.display = '';
+    badge.textContent = cache.length;
+    list.innerHTML = cache.map(function (p, i) {
+      var t = p.url
+        ? '<a href="' + esc(p.url) + '" target="_blank" rel="noopener" class="pinned-job-title">' + esc(p.title) + '</a>'
+        : '<span class="pinned-job-title">' + esc(p.title) + '</span>';
+      return (
+        '<div class="pinned-item" draggable="true" data-idx="' + i + '">' +
+        '<span class="drag-handle" aria-hidden="true">⋮⋮</span>' +
+        '<div class="pinned-info">' + t +
+        '<div class="pinned-meta">' + esc(p.company) + ' · ' + fmtDate(p.date) + '</div>' +
+        '</div>' +
+        '<button class="unpin-btn" data-idx="' + i + '" title="Unpin (applied)" aria-label="Unpin">×</button>' +
+        '</div>'
+      );
+    }).join('');
+    list.querySelectorAll('.unpin-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        cache.splice(+btn.dataset.idx, 1);
+        render();
+        syncButtons();
+        persist();
+      });
+    });
+    initDrag();
+  }
+
+  function syncButtons() {
+    var set = {};
+    cache.forEach(function (p) { set[p.id] = true; });
+    document.querySelectorAll('li[data-pin-id]').forEach(function (li) {
+      var btn = li.querySelector('.pin-btn');
+      if (!btn) return;
+      var pinned = !!set[li.dataset.pinId];
+      btn.classList.toggle('is-pinned', pinned);
+      btn.setAttribute('aria-pressed', String(pinned));
+    });
+  }
+
+  function togglePin(li) {
+    var id  = li.dataset.pinId;
+    var idx = cache.findIndex(function (p) { return p.id === id; });
+    if (idx >= 0) {
+      cache.splice(idx, 1);
+    } else {
+      cache.push({
+        id:      id,
+        title:   li.dataset.title,
+        url:     li.dataset.url || null,
+        company: li.dataset.company,
+        date:    li.dataset.date
+      });
+    }
+    render();
+    syncButtons();
+    persist();
+  }
+
+  document.querySelectorAll('.pin-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var li = btn.closest('li[data-pin-id]');
+      if (!li) return;
+      togglePin(li);
+    });
+  });
+
+  function initDrag() {
+    var list    = document.getElementById('pinned-list');
+    var dragged = null;
+    list.querySelectorAll('.pinned-item').forEach(function (item) {
+      item.addEventListener('dragstart', function (e) {
+        dragged = item;
+        e.dataTransfer.effectAllowed = 'move';
+        setTimeout(function () { item.classList.add('dragging'); }, 0);
+      });
+      item.addEventListener('dragend', function () {
+        item.classList.remove('dragging');
+        list.querySelectorAll('.pinned-item').forEach(function (i) { i.classList.remove('drag-over'); });
+        dragged = null;
+      });
+      item.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        if (item !== dragged) {
+          list.querySelectorAll('.pinned-item').forEach(function (i) { i.classList.remove('drag-over'); });
+          item.classList.add('drag-over');
+        }
+      });
+      item.addEventListener('dragleave', function () { item.classList.remove('drag-over'); });
+      item.addEventListener('drop', function (e) {
+        e.preventDefault();
+        if (!dragged || item === dragged) return;
+        cache.splice(+item.dataset.idx, 0, cache.splice(+dragged.dataset.idx, 1)[0]);
+        render();
+        syncButtons();
+        persist();
+      });
+    });
+  }
+
+  cache = lsLoad();
+  syncButtons();
+  render();
+})();
+
+  </script>
+</body>
+</html>
