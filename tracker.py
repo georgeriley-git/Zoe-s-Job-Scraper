@@ -87,7 +87,7 @@ _SKIP_PREFIXES = (
     "create a job alert",
 )
 
-_SKIP_EXACT = {"title", "location", "date", "department", "company", "category", "type"}
+_SKIP_EXACT = {"title", "location", "date", "department", "company", "category", "type", "how to apply"}
 
 _LOC_LABEL_RE = re.compile(r"^(locations?|city|region|area|office|site)\s+", re.I)
 
@@ -125,13 +125,18 @@ def _is_canada(loc: str | None) -> bool:
     """True if location is Canadian or unknown (None = can't tell, keep it)."""
     if not loc:
         return True
-    up = loc.upper().strip()
+    stripped = loc.strip()
+    # "2 Locations" / "3 Locations" etc. are JobVite multi-location badges —
+    # we can't determine the countries, so keep the job rather than lose it.
+    if re.match(r'^\d+\s+[Ll]ocations?$', stripped):
+        return True
+    up = stripped.upper()
     if "CANADA" in up:
         return True
     for prov in _CA_PROVINCES:
         if re.search(r"(?<![A-Z])" + prov + r"(?![A-Z])", up):
             return True
-    lo = loc.lower()
+    lo = stripped.lower()
     for city in _CA_CITIES:
         if city in lo:
             return True
@@ -336,8 +341,13 @@ def _extract_from_selector(page, selector: str) -> list[dict]:
             loc = _LOC_LABEL_RE.sub("", _clean(loc)).strip()
             if not loc or len(loc) > 60:
                 loc = None
+            # Strip GE Vernova-style "+N More Locations" UI badges
+            elif re.match(r'^\+\d+\s*[Mm]ore\s+[Ll]ocations?', loc):
+                loc = None
 
-        key = _job_key({"title": title})
+        # Prefer URL as dedup key so two jobs with identical titles but
+        # different postings (e.g. one US, one Canada) are both kept.
+        key = url if url else _job_key({"title": title})
         if key not in seen:
             seen.add(key)
             results.append({"title": title, "url": url, "location": loc})
@@ -395,6 +405,9 @@ def _dismiss_cookie_banners(page) -> None:
         "[aria-label='Accept All']",
         "[aria-label='Accept all cookies']",
         "[aria-label='Accept cookies']",
+        # WorkWolf (CookieConsent library)
+        "button:has-text('Allow all cookies')",
+        "[data-cc='accept-all']",
     ]:
         try:
             loc = page.locator(sel).first
@@ -486,8 +499,95 @@ def _extract_gh_board_jobs(page) -> list[dict]:
     return results
 
 
+# WorkWolf embed extractor.
+# The outer clickable card is a Tailwind hover:cursor-pointer div with 2 children
+# (title-block and metadata-block). The title-block itself is a div whose first child
+# is the plain job title and whose second child is "Company | City, Province, Country".
+# We scan all divs for this inner pattern: ch[0]=plain title, ch[1]="Company | Location".
+_WORKWOLF_EXTRACT_JS = """
+() => {
+    const results = [];
+    const seen = new Set();
+
+    for (const div of document.querySelectorAll('div')) {
+        const ch = div.children;
+        if (ch.length < 2 || ch.length > 6) continue;
+        const title = (ch[0].innerText || '').replace(/\\s+/g, ' ').trim();
+        const meta  = (ch[1].innerText || '').replace(/\\s+/g, ' ').trim();
+        // Title must be a clean job name (no pipe, reasonable length)
+        if (!title || title.length < 4 || title.length > 120) continue;
+        if (title.includes('|')) continue;
+        // Meta must be "Company | Location"
+        if (!meta.includes('|')) continue;
+        // Ignore filter/header rows (meta that looks like a dropdown label)
+        if (/^All\b/i.test(meta) || meta.length < 5) continue;
+        const parts = meta.split('|');
+        const location = parts.length > 1 ? parts[parts.length - 1].trim() : null;
+        const key = title.toLowerCase();
+        if (!seen.has(key)) {
+            seen.add(key);
+            results.push({ title, location: location || null, url: null });
+        }
+    }
+    return results;
+}
+"""
+
+
+def _extract_workwolf_jobs(page, url: str) -> list[dict]:
+    """Extract jobs from a WorkWolf embed page."""
+    try:
+        page.goto(url, wait_until="load", timeout=60_000)
+    except Exception:
+        pass
+
+    _dismiss_cookie_banners(page)
+    page.wait_for_timeout(4_000)
+
+    # Scroll to trigger lazy-loading of the full job list
+    for _ in range(5):
+        page.evaluate("window.scrollBy(0, 800)")
+        page.wait_for_timeout(800)
+    page.wait_for_timeout(1_000)
+
+    _exhaust_show_more(page)
+
+    try:
+        raw = page.evaluate(_WORKWOLF_EXTRACT_JS)
+    except Exception:
+        raw = []
+
+    results = []
+    seen: set[str] = set()
+    for item in raw:
+        title = _clean(item.get("title", ""))
+        if not title or not (MIN_LEN <= len(title) <= MAX_LEN):
+            continue
+        if any(title.lower().startswith(p) for p in _SKIP_PREFIXES):
+            continue
+        if title.lower() in _SKIP_EXACT:
+            continue
+
+        loc = item.get("location")
+        if loc:
+            loc = _clean(loc)
+            if not loc or len(loc) > 80:
+                loc = None
+
+        key = title.lower().strip()
+        if key not in seen:
+            seen.add(key)
+            results.append({"title": title, "url": None, "location": loc})
+
+    return results
+
+
 def extract_jobs(page, url: str, custom_selector=None) -> list[dict]:
     """Navigate to url, exhaust show-more buttons, paginate through all pages, return all jobs."""
+    # WorkWolf embed: dedicated extractor handles cookie consent and lazy loading
+    if "app.workwolf.com/embed" in url:
+        return _extract_workwolf_jobs(page, url)
+
     try:
         page.goto(url, wait_until="load", timeout=60_000)
     except Exception:
@@ -521,7 +621,9 @@ def extract_jobs(page, url: str, custom_selector=None) -> list[dict]:
             if results:
                 added = 0
                 for j in results:
-                    k = _job_key(j)
+                    # Prefer URL as key so same-titled jobs with different URLs
+                    # (different postings) are both captured.
+                    k = j.get("url") or _job_key(j)
                     if k not in seen_keys:
                         seen_keys.add(k)
                         all_jobs.append(j)

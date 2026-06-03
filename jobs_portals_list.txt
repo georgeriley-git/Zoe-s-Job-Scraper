@@ -3,15 +3,15 @@ FLO EV Charging	https://apply.workable.com/flo-addenergie/?lng=en
 ChargePoint	https://www.chargepoint.com/en-ca/about/opportunities
 ChargeLab	https://chargelab.co/jobs
 Northcharge	https://www.linkedin.com/company/north-charge-inc/jobs/
-metroEV	https://www.metroev.ca/careers
+metroEV	https://www.metroev.ca/careers	h3:not(.hs_cos_wrapper)
 Flipturn	https://www.getflipturn.com/careers
 EVBox	https://evbox.com/en/about/careers/
 Axso	https://jobs.glowinthecloud.com/axso
-PowerON	https://www.poweronenergy.ca/about/careers/
+PowerON	https://app.workwolf.com/embed/company/361
 Variablegrid Adaptive Power Inc	https://www.linkedin.com/company/variablegrid-adaptive-power-inc/jobs/
 FIIX CMMS	https://www.linkedin.com/jobs/search/?currentJobId=4401532817&f_C=2498%2C33920%2C20931%2C770755%2C10970690%2C8422791%2C2417593%2C10831502%2C10829528&geoId=92000000&origin=COMPANY_PAGE_JOBS_CLUSTER_EXPANSION&originToLandingJobPostings=4401532817%2C4415569881%2C4413751355%2C4409018866%2C4400582591%2C4413769175%2C4415566973%2C4398037629%2C4360757163
 MaintainX CMMS	https://job-boards.greenhouse.io/maintainx	tr.job-post a
-UpKeep	https://upkeep.com/careers/#careers-table	p.title
+UpKeep	https://job-boards.greenhouse.io/upkeep	tr.job-post a
 GridBeyond	https://gridbeyond.bamboohr.com/careers	a.job-listing-title
 Voltus	https://www.voltus.co/jobs	.jobs_item
 OhmConnect	https://apply.workable.com/renewhome/
@@ -19,12 +19,12 @@ Uplight Grid Software	https://jobs.jobvite.com/uplight/jobs
 Opus One Solutions	https://apply.workable.com/opusonesolutions/
 CPower Energy	https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=b2431733-235a-437c-978d-011f4e00c432&ccId=19000101_000001&type=JS&lang=en_US
 GE Vernova	https://careers.gevernova.com/jobs?filter%5Bcountry%5D%5B0%5D=Canada&filter%5Bemployment_type%5D%5B0%5D=Full%20Time&filter%5Bcategory%5D%5B0%5D=Sales&filter%5Bcategory%5D%5B1%5D=Services&page_number=2
-Virtual Peaker	https://virtual-peaker.com/company/careers/
+Virtual Peaker	https://virtual-peaker.com/company/careers/	.card h3
 Enel Group	https://jobs.enel.com/en_US/careers/JobOpenings/?505=5999&505_format=670&listFilterMode=1&jobRecordsPerPage=100&	h3.article__header__text__title
 EnPowered	https://enpowered.com/career/your-ideal-job-not-listed/
 GeoTab	https://careers.geotab.com/jobs?location=CA&department=All&role=All&page=1	a.css-ytumd6
 Edgecom	https://edgecomcareers.applytojobs.ca/	a.text-lg.font-medium.text-default-button
-Novisto	https://novisto.com/company/careers/job-openings
+Novisto	https://job-boards.greenhouse.io/novisto78	tr.job-post a
 Climate Tech List (Toronto)	https://www.climatetechlist.com/jobs?location=Toronto
 Climate Tech List (Canada + remote)	https://www.climatetechlist.com/jobs?location=Canada&remote=remote-only
 Climate Tech List (Ontario)	https://www.climatetechlist.com/jobs?location=Ontario&remote=All
