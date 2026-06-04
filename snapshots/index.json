@@ -1,7 +1,8 @@
 {
   "snapshots": [
     "2026-06-02_1554.json",
-    "2026-06-03_1252.json"
+    "2026-06-03_1252.json",
+    "2026-06-04_1052.json"
   ],
   "portals": [
     {
@@ -42,7 +43,7 @@
     },
     {
       "name": "PowerON",
-      "url": "https://www.poweronenergy.ca/about/careers/"
+      "url": "https://app.workwolf.com/embed/company/361"
     },
     {
       "name": "Variablegrid Adaptive Power Inc",
@@ -58,7 +59,7 @@
     },
     {
       "name": "UpKeep",
-      "url": "https://upkeep.com/careers/#careers-table"
+      "url": "https://job-boards.greenhouse.io/upkeep"
     },
     {
       "name": "GridBeyond",
@@ -110,7 +111,7 @@
     },
     {
       "name": "Novisto",
-      "url": "https://novisto.com/company/careers/job-openings"
+      "url": "https://job-boards.greenhouse.io/novisto78"
     }
   ]
 }
