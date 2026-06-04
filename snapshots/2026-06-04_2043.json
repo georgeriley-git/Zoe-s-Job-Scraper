@@ -1,0 +1,630 @@
+{
+  "SWTCH": [
+    {
+      "title": "Business Development Manager - North America",
+      "url": null,
+      "location": null
+    },
+    {
+      "title": "EV Deployment Coordinator",
+      "url": null,
+      "location": null
+    },
+    {
+      "title": "Product Manager",
+      "url": null,
+      "location": null
+    },
+    {
+      "title": "Sales Development Representative (North America)",
+      "url": null,
+      "location": null
+    },
+    {
+      "title": "Software Engineer (AI-First), Fleet Operations",
+      "url": null,
+      "location": null
+    },
+    {
+      "title": "VP of Logistics & Operations",
+      "url": null,
+      "location": null
+    }
+  ],
+  "FLO EV Charging": [
+    {
+      "title": "Adjoint(e) administratif(ve) - Données clients - Bilingue",
+      "url": null,
+      "location": null
+    },
+    {
+      "title": "Analyste en assurance qualité logicielle",
+      "url": null,
+      "location": null
+    },
+    {
+      "title": "Analyste en intelligence d’affaires",
+      "url": null,
+      "location": null
+    },
+    {
+      "title": "Coordonnateur(trice) - Inventaire & logistique",
+      "url": null,
+      "location": null
+    },
+    {
+      "title": "Coordonnateur(trice) planification des horaires",
+      "url": null,
+      "location": null
+    },
+    {
+      "title": "Gestionnaire de produit",
+      "url": null,
+      "location": null
+    },
+    {
+      "title": "Gestionnaire de produit - Bornes de recharge - VE",
+      "url": null,
+      "location": null
+    },
+    {
+      "title": "Ingénieur(e) support logiciel",
+      "url": null,
+      "location": null
+    },
+    {
+      "title": "Product Manager - EV charging station",
+      "url": null,
+      "location": null
+    },
+    {
+      "title": "Spécialiste - Gouvernance de données",
+      "url": null,
+      "location": null
+    }
+  ],
+  "ChargePoint": [
+    {
+      "title": "Deployment Specialist - Toronto/Ontario, Canada 9am PT - 6pm PT Shift",
+      "url": "https://www.chargepoint.com/about/opportunities/deployment-specialist-torontoontario-canada-9am-pt-6pm-pt-shift?gh_jid=8508959002",
+      "location": "Canada"
+    },
+    {
+      "title": "Embedded Linux Engineer - Platform Software",
+      "url": "https://www.chargepoint.com/about/opportunities/embedded-linux-engineer-platform-software?gh_jid=8524453002",
+      "location": null
+    },
+    {
+      "title": "Senior Site Engineer",
+      "url": "https://www.chargepoint.com/about/opportunities/senior-site-engineer?gh_jid=8530305002",
+      "location": "Canada"
+    }
+  ],
+  "ChargeLab": [
+    {
+      "title": "Bilingual Support Specialist, EV Charging (French/ English)",
+      "url": null,
+      "location": null
+    }
+  ],
+  "Northcharge": [],
+  "metroEV": [
+    {
+      "title": "Sales Representative",
+      "url": null,
+      "location": null
+    }
+  ],
+  "Flipturn": [],
+  "EVBox": [],
+  "Axso": [],
+  "PowerON": [
+    {
+      "title": "Analyst, Commercial & Financial Strategy",
+      "url": null,
+      "location": "Toronto, ON, Canada"
+    },
+    {
+      "title": "Analyst, Energy Management and Market Operations",
+      "url": null,
+      "location": "Toronto, ON, Canada"
+    },
+    {
+      "title": "Charging Support Operator",
+      "url": null,
+      "location": "Toronto, ON, Canada"
+    },
+    {
+      "title": "Electrical Engineer",
+      "url": null,
+      "location": "Toronto, ON, Canada"
+    },
+    {
+      "title": "Operations & Maintenance Lead",
+      "url": null,
+      "location": "Toronto, ON, Canada"
+    },
+    {
+      "title": "Senior Manager, Asset Management & Operations",
+      "url": null,
+      "location": "Toronto, ON, Canada"
+    },
+    {
+      "title": "Senior Manager, Growth & Innovation",
+      "url": null,
+      "location": "Toronto, ON, Canada"
+    },
+    {
+      "title": "Service Electrician",
+      "url": null,
+      "location": "Toronto, ON, Canada"
+    }
+  ],
+  "Variablegrid Adaptive Power Inc": [],
+  "FIIX CMMS": [
+    {
+      "title": "Employment type",
+      "url": null,
+      "location": null
+    },
+    {
+      "title": "Enterprise Software Solution Sales Executive",
+      "url": null,
+      "location": "Alberta, Canada"
+    },
+    {
+      "title": "Environmental Health & Safety Specialist",
+      "url": null,
+      "location": "Cambridge, Ontario, Canada"
+    },
+    {
+      "title": "Industries",
+      "url": null,
+      "location": null
+    },
+    {
+      "title": "Job function",
+      "url": null,
+      "location": null
+    },
+    {
+      "title": "Project Manager, MV Support Service",
+      "url": null,
+      "location": "Cambridge, Ontario, Canada"
+    },
+    {
+      "title": "Quality Analyst",
+      "url": null,
+      "location": "Kitchener, Ontario, Canada"
+    },
+    {
+      "title": "Robotics Researcher - Physical AI",
+      "url": null,
+      "location": "Kitchener, Ontario, Canada"
+    },
+    {
+      "title": "Seniority level",
+      "url": null,
+      "location": null
+    },
+    {
+      "title": "Team Lead, Quality",
+      "url": null,
+      "location": "Cambridge, Ontario, Canada"
+    }
+  ],
+  "MaintainX CMMS": [
+    {
+      "title": "Concepteur de produits senior",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/4360980007",
+      "location": "Montreal, Canada"
+    },
+    {
+      "title": "Customer Education Manager",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5137643007",
+      "location": "Toronto, Ontario"
+    },
+    {
+      "title": "Customer Success Manager",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5040463007",
+      "location": "Montreal"
+    },
+    {
+      "title": "Customer Success Manager (Bilingual – English & Spanish)",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5135472007",
+      "location": "Toronto"
+    },
+    {
+      "title": "Design Researcher",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5123809007",
+      "location": "Toronto, Ontario, Canada"
+    },
+    {
+      "title": "DevOps Specialist",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5064497007",
+      "location": "Montreal, Toronto"
+    },
+    {
+      "title": "Directeur·trice du développement logiciel, plateforme",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5147149007",
+      "location": "Montréal"
+    },
+    {
+      "title": "Director of Software Development, Platform",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5147135007",
+      "location": "Toronto, Montreal"
+    },
+    {
+      "title": "Développeur de données senior",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5019738007",
+      "location": "Montreal, Toronto"
+    },
+    {
+      "title": "Développeur logiciel senior, facturation",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5128466007",
+      "location": "Montréal"
+    },
+    {
+      "title": "Développeur(euse) de données sénior, gouvernance des données",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5105184007",
+      "location": "Montréal, Toronto"
+    },
+    {
+      "title": "Développeur(se) de logiciel senior spécialisé en moteurs de recherche",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5073911007",
+      "location": "Montréal, Toronto"
+    },
+    {
+      "title": "Développeur(se) en fiabilité de site",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5051539007",
+      "location": "Montreal & Toronto"
+    },
+    {
+      "title": "Développeur(se) Full-Stack intermédiaire",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5071283007",
+      "location": "Montréal"
+    },
+    {
+      "title": "Développeur(se) Full-Stack sénior ou en chef",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/4946464007",
+      "location": "Montréal"
+    },
+    {
+      "title": "Développeur(se) Logiciel de Plateforme",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/4999426007",
+      "location": "Montreal, Quebec"
+    },
+    {
+      "title": "Développeur(se) Logiciel de Plateforme, Outils de développement IA",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5067627007",
+      "location": "Montreal, Canada"
+    },
+    {
+      "title": "Développeur(se) logiciel principal (Senior), déploiements de conformité et multi-régions",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5053057007",
+      "location": "Montréal, Toronto"
+    },
+    {
+      "title": "Développeur(se) logiciel senior, Plateforme API et Écosystème",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5074069007",
+      "location": "Montréal, Toronto"
+    },
+    {
+      "title": "Full-Stack Developer - IAM",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/4978970007",
+      "location": "Toronto"
+    },
+    {
+      "title": "Full-Stack Developer, Connected Data",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5112773007",
+      "location": "Montréal, Toronto"
+    },
+    {
+      "title": "Gestionnaire de la réussite client",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5135509007",
+      "location": "Montreal, Canada"
+    },
+    {
+      "title": "Gestionnaire de la Réussite Client (Bilingue – Anglais et Espagnol)",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5135467007",
+      "location": "Montreal"
+    },
+    {
+      "title": "Gestionnaire de la réussite des clients",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5040462007",
+      "location": "Montreal"
+    },
+    {
+      "title": "Gestionnaire du design produit",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5147154007",
+      "location": "Montréal"
+    },
+    {
+      "title": "Gestionnaire du développement logiciel",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/4744323007",
+      "location": "Montreal, Toronto"
+    },
+    {
+      "title": "Gestionnaire du développement logiciel, DevOps",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5144036007",
+      "location": "Montréal"
+    },
+    {
+      "title": "Head of Growth and Data Science",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5041650007",
+      "location": "Canada (Remote)"
+    },
+    {
+      "title": "Intermediate Full-Stack Developer",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5071289007",
+      "location": "Montreal, Toronto"
+    },
+    {
+      "title": "Platform Developer, AI Builder",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5067628007",
+      "location": "Canada/United States"
+    },
+    {
+      "title": "Principal Technical Program Manager",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5130372007",
+      "location": "United States & Canada (Remote)"
+    },
+    {
+      "title": "Product Design Manager",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5146385007",
+      "location": "Montreal, Canada"
+    },
+    {
+      "title": "Responsable de la formation des clients",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5137672007",
+      "location": "Montreal, Quebec"
+    },
+    {
+      "title": "Scaled Enterprise Customer Success Manager",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5135511007",
+      "location": "Toronto"
+    },
+    {
+      "title": "Senior Product Designer",
+      "url": "https://job-boards.greenhouse.io/maintainx/jobs/5133299007",
+      "location": "Toronto, Ontario, Canada"
+    }
+  ],
+  "UpKeep": [],
+  "GridBeyond": [],
+  "Voltus": [
+    {
+      "title": "Energy Markets Intern (MISO)",
+      "url": "https://jobs.lever.co/voltus/b7833dd8-d742-44d8-aae2-2e7de7541ce4/apply",
+      "location": null
+    },
+    {
+      "title": "Market Operations Analyst",
+      "url": "https://jobs.lever.co/voltus/a3b26f0a-a9a5-4b66-b48a-bd4f73879d15/apply",
+      "location": null
+    },
+    {
+      "title": "Product Manager - Market Platform",
+      "url": "https://jobs.lever.co/voltus/d2dac708-c864-4f43-89cf-6220c1387e38/apply",
+      "location": null
+    },
+    {
+      "title": "Residential Data Analyst Intern",
+      "url": "https://jobs.lever.co/voltus/d30b5349-1023-497f-a5e5-264204071235/apply",
+      "location": null
+    },
+    {
+      "title": "Sales Associate (Remote)",
+      "url": "https://jobs.lever.co/voltus/e6e12da1-116e-4fa9-bb36-a6d224aaee4f/apply",
+      "location": null
+    },
+    {
+      "title": "Sales Director - MISO",
+      "url": "https://jobs.lever.co/voltus/76f6fac9-e688-40dd-bdf0-2b67494ea292/apply",
+      "location": null
+    },
+    {
+      "title": "Sales Director PJM",
+      "url": "https://jobs.lever.co/voltus/34b834c0-7227-4c64-bfae-a31b50ab30d4/apply",
+      "location": null
+    },
+    {
+      "title": "Sales Director SPP+",
+      "url": "https://jobs.lever.co/voltus/416935ba-7e48-4e27-8f4d-271627808c01/apply",
+      "location": null
+    },
+    {
+      "title": "Sales Productivity Specialist",
+      "url": "https://jobs.lever.co/voltus/6fadc163-3d68-49af-8dd3-56389de0ee03/apply",
+      "location": null
+    },
+    {
+      "title": "Sales Technical Analytics Intern",
+      "url": "https://jobs.lever.co/voltus/abc773f3-edbc-4027-81fb-7668ef803e8d/apply",
+      "location": null
+    },
+    {
+      "title": "Security Engineer",
+      "url": "https://jobs.lever.co/voltus/c58840c7-b1ef-4118-a871-480ecc7e1fc8/apply",
+      "location": null
+    },
+    {
+      "title": "Senior Data Infrastructure Engineer",
+      "url": "https://jobs.lever.co/voltus/9f71fcd9-f5d3-4bb1-bee5-750b5e372fde/apply",
+      "location": null
+    },
+    {
+      "title": "Utility Partnerships Director",
+      "url": "https://jobs.lever.co/voltus/870926b1-eec0-4ba8-87db-a2dee4379a7b/apply",
+      "location": null
+    }
+  ],
+  "OhmConnect": [
+    {
+      "title": "Director, Business Development (Remote, US)",
+      "url": null,
+      "location": null
+    },
+    {
+      "title": "Engineering Manager, Consumer (Remote, US)",
+      "url": null,
+      "location": null
+    },
+    {
+      "title": "Engineering Manager, Infrastructure (Remote, US)",
+      "url": null,
+      "location": null
+    },
+    {
+      "title": "Manager, Market Development (Remote, US)",
+      "url": null,
+      "location": null
+    },
+    {
+      "title": "Product Designer (6 Month Contract - Remote, US)",
+      "url": null,
+      "location": null
+    },
+    {
+      "title": "Senior Engineer, Test and Automation (Remote, US)",
+      "url": null,
+      "location": null
+    },
+    {
+      "title": "Senior Technical Implementation Manager, VPP (Remote, US)",
+      "url": null,
+      "location": null
+    },
+    {
+      "title": "Staff Engineer, Full Stack (Remote, US)",
+      "url": null,
+      "location": null
+    },
+    {
+      "title": "Staff Sales Engineer, Omnichannel (Remote, US)",
+      "url": null,
+      "location": null
+    }
+  ],
+  "Uplight Grid Software": [
+    {
+      "title": "Financial Analyst",
+      "url": "https://jobs.jobvite.com/uplight/job/owA7zfww",
+      "location": "2 Locations"
+    },
+    {
+      "title": "Senior Software Engineer (Frontend - React/Angular)",
+      "url": "https://jobs.jobvite.com/uplight/job/oKkYzfwl",
+      "location": "2 Locations"
+    }
+  ],
+  "Opus One Solutions": [],
+  "CPower Energy": [],
+  "GE Vernova": [
+    {
+      "title": "Directeur National Senior des Ventes – Hydroélectricité/ Senior National Sales Manager – Hydro",
+      "url": "https://careers.gevernova.com/directeur-national-senior-des-ventes-hydro%C3%A9lectricit%C3%A9-senior-national-sales-manager-hydro/job/R5029911",
+      "location": null
+    },
+    {
+      "title": "Field Service Engineer",
+      "url": "https://careers.gevernova.com/field-service-engineer/job/R5035199",
+      "location": null
+    },
+    {
+      "title": "Lead Services Specialist",
+      "url": "https://careers.gevernova.com/lead-services-specialist/job/R5035327",
+      "location": null
+    }
+  ],
+  "Virtual Peaker": [
+    {
+      "title": "Client Success Manager",
+      "url": null,
+      "location": null
+    }
+  ],
+  "Enel Group": [
+    {
+      "title": "Assistant Wind Site Supervisor - Pincher Creek, Alberta, Canada",
+      "url": "https://jobs.enel.com/en_US/careers/JobDetail/22297?team=RenewableEnergies",
+      "location": "Alberta, Canada"
+    }
+  ],
+  "EnPowered": [],
+  "GeoTab": [
+    {
+      "title": "AI Agent Developer Data & Analytics Oakville, Ontario",
+      "url": "https://careers.geotab.com/jobs/description/5234682008/",
+      "location": null
+    },
+    {
+      "title": "Associate Vice President, Sales Enablement (Remote) Sales Remote - Canada",
+      "url": "https://careers.geotab.com/jobs/description/5206153008/",
+      "location": null
+    },
+    {
+      "title": "Bilingual Training Specialist (Remote) Operations Remote - Canada",
+      "url": "https://careers.geotab.com/jobs/description/5225823008/",
+      "location": null
+    },
+    {
+      "title": "Business Development Representative Sales Oakville, Ontario - Canada; Toronto, Ontario",
+      "url": "https://careers.geotab.com/jobs/description/5187545008/",
+      "location": null
+    },
+    {
+      "title": "Business Development Specialist Sales Oakville, Ontario - Canada; Toronto, Ontario - Canada; Waterloo, Ontario",
+      "url": "https://careers.geotab.com/jobs/description/5232358008/",
+      "location": null
+    },
+    {
+      "title": "Corporate Development Analyst Operations Oakville, Ontario - Canada; Toronto, Ontario",
+      "url": "https://careers.geotab.com/jobs/description/5192173008/",
+      "location": null
+    },
+    {
+      "title": "Credit Risk & Recovery Manager Finance Oakville, Ontario",
+      "url": "https://careers.geotab.com/jobs/description/5228330008/",
+      "location": null
+    },
+    {
+      "title": "Global Demo Excellence Lead Sales Remote - Canada",
+      "url": "https://careers.geotab.com/jobs/description/5206140008/",
+      "location": null
+    },
+    {
+      "title": "Legal Counsel Legal & Compliance Oakville, Ontario - Canada; Toronto, Ontario - Canada; Waterloo, Ontario",
+      "url": "https://careers.geotab.com/jobs/description/5207826008/",
+      "location": null
+    },
+    {
+      "title": "Network Engineering Technical Operations Oakville, Ontario - Canada; Toronto, Ontario - Canada; Waterloo, Ontario",
+      "url": "https://careers.geotab.com/jobs/description/5212772008/",
+      "location": null
+    }
+  ],
+  "Edgecom": [
+    {
+      "title": "Directeur(trice) du développement des affaires (Québec)",
+      "url": "https://edgecomcareers.applytojobs.ca/d%c3%a9veloppement+des+affaires/44343",
+      "location": null
+    },
+    {
+      "title": "Manager of Business Development – Quebec",
+      "url": "https://edgecomcareers.applytojobs.ca/sales/44235",
+      "location": null
+    },
+    {
+      "title": "SCADA/IOT Integration Engineer",
+      "url": "https://edgecomcareers.applytojobs.ca/product/43181",
+      "location": null
+    },
+    {
+      "title": "Senior Software Engineer",
+      "url": "https://edgecomcareers.applytojobs.ca/product/43180",
+      "location": null
+    }
+  ],
+  "Novisto": []
+}
