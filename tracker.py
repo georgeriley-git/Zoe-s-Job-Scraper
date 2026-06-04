@@ -1765,6 +1765,7 @@ def scrape():
     )
 
     _write_snapshot_index()
+    generate_dashboard()
 
     existing_snaps = _all_snapshots()
     if len(existing_snaps) == 1:
